@@ -1,0 +1,29 @@
+{
+    "mcpServers": {
+      "mcp-ntp-stdio-for-debug": {
+        "command": "uv",
+        "args": [
+          "--directory",
+          "path_to_your_local_mcp-project",
+          "run",
+          "mcp-ntp"
+        ],
+        "env": {
+            "NTP_DOMAIN_URL": "cn.ntp.org.cn"
+        }
+      },
+      "mcp-ntp-sse-for-debug": {
+        "url": "http://localhost:18002/sse",
+        "headers": {
+            "ntp_url": "cn.ntp.org.cn"
+        }
+      },
+      "mcp-ntp-stdio-for-production": {
+        "command": "uvx",
+        "args": ["mcp-ntp"],
+        "env": {
+            "NTP_DOMAIN_URL": "cn.ntp.org.cn"
+        }
+      }
+    }
+  }

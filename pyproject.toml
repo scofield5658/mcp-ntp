@@ -1,0 +1,35 @@
+[project]
+name = "mcp-ntp"
+version = "0.2.0"
+description = "MCP-based NTP Time Service"
+authors = [
+    { name = "Scofield Guo", email = "guozhi5658@gmail.com" }
+]
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi",
+    "fastmcp",
+    "mcp",
+    "uvicorn",
+    "requests",
+    "python-dotenv",
+    "click",
+    "ntplib"
+]
+
+[project.scripts]
+mcp-ntp = "app:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[dependency-groups]
+dev = [
+    "twine>=6.1.0",
+]
