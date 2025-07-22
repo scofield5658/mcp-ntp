@@ -50,7 +50,7 @@ def setup_logging(level: int = logging.INFO) -> logging.Logger:
 )
 @click.option(
     "--port",
-    default=18002,
+    default=8080,
     help="SSE 传输方式的监听端口",
 )
 @click.option(

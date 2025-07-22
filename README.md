@@ -24,7 +24,7 @@ uv sync
 设置`NTP_DOMAIN_URL`环境变量：
 
 ```bash
-export NTP_DOMAIN_URL="cn.ntp.org.cn"
+export NTP_DOMAIN_URL="ntp.aliyun.com"
 ```
 
 ### 请求头配置（sse模式）
@@ -32,7 +32,7 @@ export NTP_DOMAIN_URL="cn.ntp.org.cn"
 在请求头中包含`ntp_url`字段：
 
 ```
-ntp_url: cn.ntp.org.cn
+ntp_url: ntp.aliyun.com
 ```
 
 ## 使用方法
@@ -41,7 +41,7 @@ ntp_url: cn.ntp.org.cn
 
 ```bash
 # 设置环境变量
-export NTP_DOMAIN_URL="cn.ntp.org.cn"
+export NTP_DOMAIN_URL="ntp.aliyun.com"
 
 # 启动服务
 python -m app
@@ -51,10 +51,10 @@ python -m app
 
 ```bash
 # 启动服务
-python -m app --transport sse --port 18002
+python -m app --transport sse --port 8080
 
 # 使用curl测试
-curl -H "ntp_url: cn.ntp.org.cn" http://localhost:18002/sse
+curl -H "ntp_url: ntp.aliyun.com" http://localhost:8080/sse
 ```
 
 ## 工具说明
@@ -69,7 +69,7 @@ curl -H "ntp_url: cn.ntp.org.cn" http://localhost:18002/sse
 **返回数据：**
 ```json
 {
-  "ntp_server": "cn.ntp.org.cn",
+  "ntp_server": "ntp.aliyun.com",
   "ntp_timestamp": 1703123456.789,
   "ntp_time": "2023-12-21T10:30:56.789",
   "local_system_time": "2023-12-21T10:30:56.789",
@@ -83,7 +83,7 @@ curl -H "ntp_url: cn.ntp.org.cn" http://localhost:18002/sse
 可以使用提供的测试NTP服务器进行调试：
 
 ```bash
-export NTP_DOMAIN_URL="cn.ntp.org.cn"
+export NTP_DOMAIN_URL="ntp.aliyun.com"
 python -m app -v
 ```
 

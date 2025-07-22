@@ -29,7 +29,7 @@ def test_ntp_client():
 
     # 测试2: 使用自定义NTP服务器
     try:
-        result = get_current_time("cn.ntp.org.cn")
+        result = get_current_time("ntp.aliyun.com")
         print("✓ Custom NTP server test successful")
         print(f"  NTP server: {result['ntp_server']}")
         print(f"  NTP time: {result['ntp_time']}")
