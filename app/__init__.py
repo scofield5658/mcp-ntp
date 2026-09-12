@@ -3,6 +3,7 @@ import logging
 import os
 import sys
 from importlib.metadata import PackageNotFoundError, version
+from typing import Optional
 
 import click
 from dotenv import load_dotenv
@@ -60,7 +61,7 @@ def setup_logging(level: int = logging.INFO) -> logging.Logger:
 )
 def main(
     verbose: int,
-    env_file: str | None,
+    env_file: Optional[str],
     transport: str,
     port: int,
     host: str,
@@ -136,13 +137,14 @@ async def run_sse_server(host: str, port: int):
     from mcp.server.sse import SseServerTransport
     from starlette.applications import Starlette
     from starlette.requests import Request
+    from starlette.responses import Response
     from starlette.routing import Mount, Route
     from .server import create_mcp_server
     import uvicorn
 
     sse = SseServerTransport("/messages/")
 
-    async def handle_sse(request: Request):
+    async def handle_sse(request: Request) -> Response:
         ntp_url = request.headers.get("ntp_url")
         app = create_mcp_server(ntp_url=ntp_url)
         async with sse.connect_sse(
@@ -151,6 +153,7 @@ async def run_sse_server(host: str, port: int):
             await app.run(
                 streams[0], streams[1], app.create_initialization_options()
             )
+        return Response()
 
     starlette_app = Starlette(
         debug=True,
