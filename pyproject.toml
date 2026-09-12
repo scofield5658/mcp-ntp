@@ -1,23 +1,22 @@
 [project]
 name = "mcp-ntp"
-version = "0.2.2"
+version = "0.3.0"
 description = "MCP-based NTP Time Service"
 authors = [
     { name = "Scofield Guo", email = "guozhi5658@gmail.com" }
 ]
 readme = "README.md"
 license = { file = "LICENSE" }
-requires-python = ">=3.10"
+requires-python = ">=3.10,<3.15"
 urls = { Homepage = "https://github.com/scofield5658/mcp-ntp" }
 dependencies = [
-    "fastapi",
-    "fastmcp",
-    "mcp",
-    "uvicorn",
-    "requests",
-    "python-dotenv",
-    "click",
-    "ntplib"
+    "fastapi>=0.116,<1",
+    "mcp==2.2.0",
+    "uvicorn>=0.35,<1",
+    "requests>=2.32,<3",
+    "python-dotenv>=1,<2",
+    "click>=8,<9",
+    "ntplib>=0.4,<1"
 ]
 
 [project.scripts]
@@ -33,4 +32,5 @@ packages = ["app"]
 [dependency-groups]
 dev = [
     "twine>=6.1.0",
+    "pytest>=8,<9",
 ]

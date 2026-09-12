@@ -12,6 +12,8 @@
 
 ## 安装
 
+需要 Python 3.10 至 3.14；服务固定使用 MCP Python SDK 2.2.0。
+
 ```bash
 # 使用 uv 安装依赖
 uv sync
