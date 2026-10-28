@@ -74,6 +74,13 @@ playground/
 
 # Claude
 .claude/
+
+# Intermediate agent plans/specs (not for remote)
+docs/
+
+# Local skill install targets (canonical skill lives in skills/)
+.agents/
+
 # repomix
 .repomixignore
 repomix.config.json
