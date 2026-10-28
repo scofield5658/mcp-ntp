@@ -95,9 +95,20 @@ python -m app -v
 
 ## Agent Skill
 
-This repo ships a project skill at `.agents/skills/mcp-ntp/` so agents that load skills can set up a local mcp-ntp instance and call `get_current_time`.
+This repo ships an installable Agent Skill at `skills/mcp-ntp/` so agents can set up a local mcp-ntp instance and call `get_current_time`.
 
-Cursor and other agentskills-compatible runtimes discover project skills under `.agents/skills/` automatically. Example prompt:
+Install into your project or user skills directory:
+
+```bash
+# Via skills CLI (recommended)
+npx skills add scofield5658/mcp-ntp --skill mcp-ntp
+
+# Or copy / symlink the standalone folder
+cp -r skills/mcp-ntp ~/.agents/skills/
+# Cursor users may also use ~/.cursor/skills/
+```
+
+Example prompt after install:
 
 > Set up mcp-ntp locally and get the current server time.
 
@@ -112,7 +123,7 @@ mcp-ntp/
 │   ├── server.py        # MCP server
 │   ├── client.py        # NTP client
 │   └── config.py        # Configuration
-├── .agents/skills/mcp-ntp/  # Agent Skill
+├── skills/mcp-ntp/      # Installable Agent Skill
 ├── pyproject.toml
 └── README.md
 ```
