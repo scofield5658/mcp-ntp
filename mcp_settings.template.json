@@ -9,20 +9,20 @@
           "mcp-ntp"
         ],
         "env": {
-            "NTP_DOMAIN_URL": "ntp.aliyun.com"
+            "NTP_DOMAIN_URL": "pool.ntp.org"
         }
       },
       "mcp-ntp-sse-for-debug": {
         "url": "http://localhost:8080/sse",
         "headers": {
-            "ntp_url": "ntp.aliyun.com"
+            "ntp_url": "pool.ntp.org"
         }
       },
       "mcp-ntp-stdio-for-production": {
         "command": "uvx",
         "args": ["mcp-ntp"],
         "env": {
-            "NTP_DOMAIN_URL": "ntp.aliyun.com"
+            "NTP_DOMAIN_URL": "pool.ntp.org"
         }
       }
     }

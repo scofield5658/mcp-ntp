@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""测试NTP客户端功能"""
+"""Manual smoke tests for the NTP client."""
 
 import sys
 import os
 
-# 添加项目根目录到Python路径
+# Ensure the project root is on sys.path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from app.client import get_current_time
 
 def test_ntp_client():
-    """测试NTP客户端功能"""
+    """Exercise get_current_time against default and custom servers."""
     print("Testing NTP client functionality...")
 
-    # 测试1: 使用默认NTP服务器
+    # Test 1: default NTP server (from env)
     try:
         result = get_current_time()
         print("✓ Default NTP server test successful")
@@ -27,9 +27,9 @@ def test_ntp_client():
 
     print()
 
-    # 测试2: 使用自定义NTP服务器
+    # Test 2: custom NTP server
     try:
-        result = get_current_time("ntp.aliyun.com")
+        result = get_current_time("pool.ntp.org")
         print("✓ Custom NTP server test successful")
         print(f"  NTP server: {result['ntp_server']}")
         print(f"  NTP time: {result['ntp_time']}")
@@ -38,7 +38,7 @@ def test_ntp_client():
 
     print()
 
-    # 测试3: 测试None处理
+    # Test 3: None falls back to default
     try:
         result = get_current_time(None)
         print("✓ None value test successful, using default server")
@@ -47,7 +47,7 @@ def test_ntp_client():
 
     print()
 
-    # 测试4: 测试只包含空格的字符串
+    # Test 4: whitespace-only string falls back to default
     try:
         result = get_current_time("   ")
         print("✓ Space string test successful, using default server")

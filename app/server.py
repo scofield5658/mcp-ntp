@@ -1,6 +1,7 @@
 """
-MCP-NTP 服务器实现
-使用原生 MCP Server 支持 stdio 和 sse 传输方式
+MCP-NTP server implementation.
+
+Uses the native MCP Server with stdio and sse transports.
 """
 
 import json
@@ -29,17 +30,17 @@ from . import __version__
 logger = logging.getLogger("mcp-ntp")
 
 class AppContext:
-    """应用上下文"""
+    """Application lifespan context."""
 
     def __init__(self):
         self.initialized = False
 
     async def initialize(self):
-        """初始化连接"""
+        """Initialize the NTP dependency check."""
         if not self.initialized:
             logger.info("Initializing NTP time service...")
             try:
-                # 测试NTP连接
+                # Probe NTP connectivity
                 time_info = client.get_current_time()
                 logger.info(f"NTP service initialization successful, server: {time_info.get('ntp_server', 'Unknown')}")
                 self.initialized = True
@@ -50,7 +51,7 @@ class AppContext:
 
 @asynccontextmanager
 async def server_lifespan(server: Server) -> AsyncIterator[AppContext]:
-    """服务器生命周期管理"""
+    """Manage server lifespan."""
     context = AppContext()
 
     try:
@@ -62,13 +63,13 @@ async def server_lifespan(server: Server) -> AsyncIterator[AppContext]:
 
 
 def create_mcp_server(ntp_url: str = None) -> Server:
-    """创建 MCP 服务器实例，支持动态 ntp_url"""
+    """Create an MCP server instance with an optional default ntp_url."""
 
     async def list_resources(
         context: ServerRequestContext,
         params: PaginatedRequestParams | None,
     ) -> ListResourcesResult:
-        """列出可用资源"""
+        """List available resources."""
         return ListResourcesResult(
             resources=[
                 Resource(
@@ -84,7 +85,7 @@ def create_mcp_server(ntp_url: str = None) -> Server:
         context: ServerRequestContext,
         params: ReadResourceRequestParams,
     ) -> ReadResourceResult:
-        """读取资源内容"""
+        """Read resource contents."""
         if params.uri == "ntp://time":
             try:
                 time_info = client.get_current_time(ntp_server=ntp_url)
@@ -122,7 +123,7 @@ def create_mcp_server(ntp_url: str = None) -> Server:
         context: ServerRequestContext,
         params: PaginatedRequestParams | None,
     ) -> ListToolsResult:
-        """列出可用工具"""
+        """List available tools."""
         return ListToolsResult(
             tools=[
                 Tool(
@@ -146,7 +147,7 @@ def create_mcp_server(ntp_url: str = None) -> Server:
         context: ServerRequestContext,
         params: CallToolRequestParams,
     ) -> CallToolResult:
-        """调用工具"""
+        """Handle tool calls."""
         try:
             if params.name == "get_current_time":
                 arguments = params.arguments or {}

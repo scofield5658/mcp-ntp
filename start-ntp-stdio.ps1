@@ -1,5 +1,5 @@
-# 设置环境变量
-$env:NTP_DOMAIN_URL = "ntp.aliyun.com"
+# Set the NTP server for stdio mode
+$env:NTP_DOMAIN_URL = "pool.ntp.org"
 
-Write-Host "启动MCP-NTP服务 (stdio模式)..." -ForegroundColor Green
+Write-Host "Starting MCP-NTP (stdio)..." -ForegroundColor Green
 python -m app --transport stdio --verbose

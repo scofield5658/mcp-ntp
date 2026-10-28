@@ -31,13 +31,15 @@ mcp-ntp/
 ├── start-ntp-*.{sh,ps1}               # English echo/messages
 ├── mcp_settings.template.json         # Prefer portable NTP example (+ note Aliyun optional)
 ├── test_ntp.py / tests/               # English comments only if present
-└── .agents/skills/setup-mcp-ntp/
+└── .agents/skills/mcp-ntp/
     ├── SKILL.md                       # Agent workflow for local setup + time tool
     └── assets/
         └── mcp-settings.snippet.json  # Client config snippet for agents to copy
 ```
 
 **Compatibility note:** Cursor also discovers `.cursor/skills/`. Primary location is `.agents/skills/` (agentskills-compatible). Optionally add a short pointer in README that Cursor users can symlink or copy into `.cursor/skills/` if needed; do **not** duplicate the full skill in two trees unless discovery testing requires it.
+
+**Skill naming:** Folder and frontmatter `name` are both `mcp-ntp` (same as the project / package name), per product owner request.
 
 ## Component Design
 
@@ -63,16 +65,16 @@ mcp-ntp/
 - Transports: `stdio`, `sse`
 - Python / MCP SDK version constraints in README remain accurate (`Python 3.10–3.14`, `mcp==2.2.0`)
 
-### 2. Skill: `setup-mcp-ntp`
+### 2. Skill: `mcp-ntp`
 
-**Path:** `.agents/skills/setup-mcp-ntp/SKILL.md`  
-**Folder name must match** frontmatter `name`.
+**Path:** `.agents/skills/mcp-ntp/SKILL.md`  
+**Folder name must match** frontmatter `name` (`mcp-ntp`).
 
 **Frontmatter (intent):**
 
 ```yaml
 ---
-name: setup-mcp-ntp
+name: mcp-ntp
 description: Use when setting up a local MCP server for accurate NTP/network time, configuring mcp-ntp in an MCP client, or needing an agent to call get_current_time for server time.
 license: MIT
 ---
@@ -95,7 +97,7 @@ Description rules: third-person, “Use when…”, triggering conditions only (
 
 Short section explaining:
 
-- Where the skill lives (`.agents/skills/setup-mcp-ntp/`)
+- Where the skill lives (`.agents/skills/mcp-ntp/`)
 - That Cursor/compatible agents discover project skills automatically
 - Example user prompt: “Set up mcp-ntp locally and get the current server time”
 
