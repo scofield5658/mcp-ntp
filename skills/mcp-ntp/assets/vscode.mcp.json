@@ -1,0 +1,12 @@
+{
+  "servers": {
+    "mcp-ntp": {
+      "type": "stdio",
+      "command": "uvx",
+      "args": ["mcp-ntp"],
+      "env": {
+        "NTP_DOMAIN_URL": "pool.ntp.org"
+      }
+    }
+  }
+}
