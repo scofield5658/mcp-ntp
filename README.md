@@ -1,77 +1,83 @@
-# MCP-NTP 时间服务
+# MCP-NTP Time Service
 
-这是一个基于MCP（Model Context Protocol）的NTP时间服务，为大模型提供准确的网络时间获取功能。
+An MCP (Model Context Protocol) NTP time service that gives language models accurate network time.
 
-## 功能特性
+## Features
 
-- 从NTP服务器获取准确的网络时间
-- 支持stdio和sse两种传输模式
-- 提供`get_current_time`工具，方便大模型获取当前时间
-- 支持环境变量和请求头两种配置NTP服务器的方式
-- 返回详细的时间信息和NTP协议数据
+- Fetch accurate network time from an NTP server
+- Support both `stdio` and `sse` transports
+- Expose a `get_current_time` tool for models to query the current time
+- Configure the NTP server via environment variable or request header
+- Return detailed time information and NTP protocol metrics
 
-## 安装
+## Install
 
-需要 Python 3.10 至 3.14；服务固定使用 MCP Python SDK 2.2.0。
+Requires Python 3.10 through 3.14. The service pins MCP Python SDK 2.2.0.
 
 ```bash
-# 使用 uv 安装依赖
+# Install dependencies with uv
 uv sync
 ```
 
-## 配置
+## Configuration
 
-### 环境变量配置（stdio模式）
+### Environment variable (stdio)
 
-设置`NTP_DOMAIN_URL`环境变量：
-
-```bash
-export NTP_DOMAIN_URL="ntp.aliyun.com"
-```
-
-### 请求头配置（sse模式）
-
-在请求头中包含`ntp_url`字段：
-
-```
-ntp_url: ntp.aliyun.com
-```
-
-## 使用方法
-
-### stdio模式
+Set `NTP_DOMAIN_URL`:
 
 ```bash
-# 设置环境变量
-export NTP_DOMAIN_URL="ntp.aliyun.com"
+export NTP_DOMAIN_URL="pool.ntp.org"
+```
 
-# 启动服务
+Regional option (China): `ntp.aliyun.com`.
+
+### Request header (sse)
+
+Include the `ntp_url` header:
+
+```
+ntp_url: pool.ntp.org
+```
+
+## Usage
+
+### stdio
+
+```bash
+export NTP_DOMAIN_URL="pool.ntp.org"
 python -m app
 ```
 
-### sse模式
+Or use the helper scripts: `start-ntp-stdio.sh` / `start-ntp-stdio.ps1`.
+
+### sse
 
 ```bash
-# 启动服务
 python -m app --transport sse --port 8080
 
-# 使用curl测试
-curl -H "ntp_url: ntp.aliyun.com" http://localhost:8080/sse
+# Smoke-test the SSE endpoint
+curl -H "ntp_url: pool.ntp.org" http://localhost:8080/sse
 ```
 
-## 工具说明
+Or use: `start-ntp-sse.sh` / `start-ntp-sse.ps1`.
 
-### get_current_time
+### MCP client settings
 
-获取当前NTP服务器时间。
+See `mcp_settings.template.json` for Cursor/compatible MCP client examples (`uv` local debug, SSE debug, and `uvx` production).
 
-**参数：**
-- `ntp_server` (可选): NTP服务器地址，如果不提供则使用环境变量或请求头中的配置
+## Tool: `get_current_time`
 
-**返回数据：**
+Get the current time from an NTP server.
+
+**Parameters:**
+
+- `ntp_server` (optional): NTP server address. If omitted, uses the environment variable or request header.
+
+**Example response:**
+
 ```json
 {
-  "ntp_server": "ntp.aliyun.com",
+  "ntp_server": "pool.ntp.org",
   "ntp_timestamp": 1703123456.789,
   "ntp_time": "2023-12-21T10:30:56.789",
   "local_system_time": "2023-12-21T10:30:56.789",
@@ -80,34 +86,41 @@ curl -H "ntp_url: ntp.aliyun.com" http://localhost:8080/sse
 }
 ```
 
-## 调试
-
-可以使用提供的测试NTP服务器进行调试：
+## Debugging
 
 ```bash
-export NTP_DOMAIN_URL="ntp.aliyun.com"
+export NTP_DOMAIN_URL="pool.ntp.org"
 python -m app -v
 ```
 
-## 开发
+## Agent Skill
 
-### 项目结构
+This repo ships a project skill at `.agents/skills/mcp-ntp/` so agents that load skills can set up a local mcp-ntp instance and call `get_current_time`.
+
+Cursor and other agentskills-compatible runtimes discover project skills under `.agents/skills/` automatically. Example prompt:
+
+> Set up mcp-ntp locally and get the current server time.
+
+## Development
+
+### Project layout
 
 ```
 mcp-ntp/
 ├── app/
-│   ├── __init__.py      # 主入口
-│   ├── server.py        # MCP服务器实现
-│   ├── client.py        # NTP客户端
-│   └── config.py        # 配置管理
-├── pyproject.toml       # 项目配置
-└── README.md           # 说明文档
+│   ├── __init__.py      # CLI entry
+│   ├── server.py        # MCP server
+│   ├── client.py        # NTP client
+│   └── config.py        # Configuration
+├── .agents/skills/mcp-ntp/  # Agent Skill
+├── pyproject.toml
+└── README.md
 ```
 
-### 添加新的NTP服务器
+### Extending NTP configuration
 
-在`client.py`中的`get_current_time`函数可以轻松扩展支持更多NTP服务器配置。
+`get_current_time` in `client.py` can be extended for additional NTP server selection logic.
 
-## 许可证
+## License
 
 MIT License

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 设置环境变量
-export NTP_DOMAIN_URL="ntp.aliyun.com"
+# Set the NTP server for stdio mode
+export NTP_DOMAIN_URL="pool.ntp.org"
 
-echo "启动MCP-NTP服务 (stdio模式)..."
+echo "Starting MCP-NTP (stdio)..."
 python -m app --transport stdio --verbose

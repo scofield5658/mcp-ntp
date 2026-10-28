@@ -15,7 +15,7 @@ except PackageNotFoundError:
 
 
 def setup_logging(level: int = logging.INFO) -> logging.Logger:
-    """设置日志配置"""
+    """Configure logging for the mcp-ntp process."""
     logger = logging.getLogger("mcp-ntp")
     logger.setLevel(level)
 
@@ -36,28 +36,28 @@ def setup_logging(level: int = logging.INFO) -> logging.Logger:
     "-v",
     "--verbose",
     count=True,
-    help="增加详细程度 (可多次使用)",
+    help="Increase verbosity (can be repeated)",
 )
 @click.option(
     "--env-file",
     type=click.Path(exists=True, dir_okay=False),
-    help=".env 文件路径"
+    help="Path to a .env file"
 )
 @click.option(
     "--transport",
     type=click.Choice(["stdio", "sse"]),
     default="stdio",
-    help="传输方式 (stdio 或 sse)",
+    help="Transport (stdio or sse)",
 )
 @click.option(
     "--port",
     default=8080,
-    help="SSE 传输方式的监听端口",
+    help="Listen port for SSE transport",
 )
 @click.option(
     "--host",
     default="0.0.0.0",
-    help="SSE 传输方式的监听地址",
+    help="Listen address for SSE transport",
 )
 def main(
     verbose: int,
@@ -66,11 +66,11 @@ def main(
     port: int,
     host: str,
 ) -> None:
-    """MCP-NTP 服务器
+    """MCP-NTP server.
 
-    支持 stdio 和 sse 两种传输方式。
+    Supports stdio and sse transports.
     """
-    # 设置日志级别
+    # Resolve log level from -v / -vv
     if verbose == 1:
         current_logging_level = logging.INFO
     elif verbose >= 2:
@@ -81,7 +81,7 @@ def main(
     logger = setup_logging(current_logging_level)
     logger.debug(f"Log level set to: {logging.getLevelName(current_logging_level)}")
 
-    # 加载环境变量
+    # Load environment variables
     if env_file:
         logger.debug(f"Loading environment variables from file: {env_file}")
         load_dotenv(env_file, override=True)
@@ -97,7 +97,7 @@ def main(
             != click.core.ParameterSource.DEFAULT
         )
 
-    # 确定最终的传输方式
+    # Resolve transport (env TRANSPORT overrides CLI default when set)
     final_transport = os.getenv("TRANSPORT", transport).lower()
     if final_transport not in ["stdio", "sse"]:
         logger.warning(f"Invalid transport method '{final_transport}', using 'stdio'")
@@ -105,7 +105,7 @@ def main(
 
     logger.debug(f"Final transport method: {final_transport}")
 
-    # 确定端口和主机
+    # Resolve port and host
     final_port = int(os.getenv("PORT", port))
     final_host = os.getenv("HOST", host)
 
@@ -118,7 +118,7 @@ def main(
 
 
 async def run_stdio_server():
-    """运行 STDIO 传输模式的 MCP 服务器"""
+    """Run the MCP server over stdio."""
     from mcp.server.stdio import stdio_server
     from .server import create_mcp_server
 
@@ -133,7 +133,7 @@ async def run_stdio_server():
 
 
 async def run_sse_server(host: str, port: int):
-    """运行 SSE 传输模式的 MCP 服务器"""
+    """Run the MCP server over SSE."""
     from mcp.server.sse import SseServerTransport
     from starlette.applications import Starlette
     from starlette.requests import Request
