@@ -1,0 +1,96 @@
+name: Publish Python Package
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pypi-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Test and build distributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.12'
+
+      - name: Validate package name and release tag
+        run: |
+          python - <<'PY'
+          import os
+          import tomllib
+
+          with open('pyproject.toml', 'rb') as source:
+              project = tomllib.load(source)['project']
+          if project['name'] != 'mcp-ntp':
+              raise SystemExit('Unexpected package name; expected mcp-ntp')
+          version = project['version']
+          if os.environ['GITHUB_EVENT_NAME'] == 'push':
+              expected = f'v{version}'
+              if os.environ['GITHUB_REF_TYPE'] != 'tag' or os.environ['GITHUB_REF_NAME'] != expected:
+                  raise SystemExit(f'Release tag must exactly match {expected}')
+          print(f'Validated mcp-ntp {version}')
+          PY
+
+      - name: Require release commit to belong to main
+        if: github.event_name == 'push'
+        run: git merge-base --is-ancestor HEAD origin/main
+
+      - name: Install build and test dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . build 'twine>=7,<8' 'pytest>=8,<9'
+
+      - name: Run automated tests
+        run: python -m pytest tests -q
+
+      - name: Build wheel and source distribution
+        run: python -m build
+
+      - name: Check distribution metadata
+        run: python -m twine check --strict dist/*
+
+      - name: Save distributions
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
+        with:
+          name: python-distributions
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    name: Publish to PyPI
+    needs: build
+    if: github.event_name == 'push' && github.ref_type == 'tag' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    environment:
+      name: pypi
+      url: https://pypi.org/project/mcp-ntp/
+    permissions:
+      id-token: write
+    steps:
+      - name: Download verified distributions
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: python-distributions
+          path: dist/
+
+      - name: Publish with PyPI Trusted Publishing
+        uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # release/v1
