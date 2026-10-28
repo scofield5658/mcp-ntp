@@ -1,6 +1,6 @@
 [project]
 name = "mcp-ntp"
-version = "0.3.0"
+version = "0.3.1"
 description = "MCP-based NTP Time Service"
 authors = [
     { name = "Scofield Guo", email = "guozhi5658@gmail.com" }
