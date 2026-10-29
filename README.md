@@ -95,22 +95,21 @@ python -m app -v
 
 ## Agent Skill
 
-This repo ships an installable Agent Skill at `skills/mcp-ntp/` so agents can set up a local mcp-ntp instance and call `get_current_time`.
-
-Install into your project or user skills directory:
+`skills/mcp-ntp/` is an [Agent Skills](https://agentskills.io/specification) package. It tells an agent when to call `get_current_time` and how to register this server in that agent's MCP config. The [skills CLI](https://github.com/vercel-labs/skills) installs the same folder into Claude Code, Cursor, GitHub Copilot, and the rest of its supported agents (Node.js 22.20 or later):
 
 ```bash
-# Via skills CLI (recommended)
-npx skills add scofield5658/mcp-ntp --skill mcp-ntp
+# Claude Code, Cursor, and GitHub Copilot
+npx skills add scofield5658/mcp-ntp --skill mcp-ntp \
+  -a claude-code -a cursor -a github-copilot -y
 
-# Or copy / symlink the standalone folder
+# Every agent the CLI supports
+npx skills add scofield5658/mcp-ntp --skill mcp-ntp --agent '*' -y
+
+# Or copy the folder into a skills directory yourself
 cp -r skills/mcp-ntp ~/.agents/skills/
-# Cursor users may also use ~/.cursor/skills/
 ```
 
-Example prompt after install:
-
-> Set up mcp-ntp locally and get the current server time.
+After install, ask the agent to register mcp-ntp and read the current network time. The skill uses the published package (`uvx mcp-ntp`), not a local checkout.
 
 ## Development
 
